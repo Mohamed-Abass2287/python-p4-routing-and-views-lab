@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 from flask import Flask
 
 app = Flask(__name__)
@@ -7,32 +8,34 @@ app = Flask(__name__)
 def index():
     return '<h1>Python Operations with Flask Routing and Views</h1>'
 
-@app.route('/print/<string:param>')
-def print_string(param):
-    print(param)
-    return param
+@app.route('/print/<string:text>')
+def print_string(text):
+    print(text)
+    return text
 
-@app.route('/count/<int:param>')
-def count(param):
-    # Join numbers with newline characters for correct test output.
-    numbers = '\n'.join(str(num) for num in range(param))
-    return numbers
+@app.route('/count/<int:number>')
+def count(number):
+    return '\n'.join(str(n) for n in range(number)) + '\n'
 
 @app.route('/math/<int:num1>/<string:operation>/<int:num2>')
+@app.route('/math/<string:operation>/<int:num1>/<int:num2>')
 def math(num1, operation, num2):
-    if operation in ['+', 'add']:
-        result = num1 + num2
-    elif operation in ['-', 'sub']:
-        result = num1 - num2
-    elif operation in ['*', 'mul']:
-        result = num1 * num2
+    # Handle case where operation comes first in URL
+    if isinstance(num1, str):
+        operation, num1 = num1, operation
+    
+    if operation == '+':
+        return str(num1 + num2)
+    elif operation == '-':
+        return str(num1 - num2)
+    elif operation == '*':
+        return str(num1 * num2)
     elif operation == 'div':
-        result = num1 / num2  # Division returns a float.
-    elif operation in ['%', 'mod']:
-        result = num1 % num2
+        return str(num1 / num2)
+    elif operation == '%' or operation == 'mod':
+        return str(num1 % num2)
     else:
-        return 'Invalid operation'
-    return str(result)
+        return 'Operation not recognized. Please use one of the following: + - * div % mod'
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=5555, debug=True)
