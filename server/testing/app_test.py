@@ -74,3 +74,8 @@ class TestApp:
         '''finds remainder of parameters in "/math/" resource when operation is "%".'''
         response = app.test_client().get('/math/5/%/5')
         assert(response.data.decode() == '0')
+
+    def test_math_modulo_word(self):
+        '''finds remainder of parameters in "/math/" resource when operation is "mod".'''
+        response = app.test_client().get('/math/mod/5/5')
+        assert response.data.decode() == '0'
